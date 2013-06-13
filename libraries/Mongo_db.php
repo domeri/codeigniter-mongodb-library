@@ -626,6 +626,54 @@ class Mongo_db {
 		}
 
 	 }
+
+/**
+	*	--------------------------------------------------------------------------------
+	*	// Get Row
+	*	--------------------------------------------------------------------------------
+	*
+	*	Get the first dosument based upon the passed parameters
+	*
+	*	@usage : $this->mongo_db->get_row('foo');
+	*/
+	
+	 public function get_row($collection = "")
+	 {
+	 	if (empty($collection))
+	 	{
+	 		show_error("In order to retreive documents from MongoDB, a collection name must be passed", 500);
+	 	}
+	 		 	
+	 	$documents = $this->db->{$collection}->find($this->wheres, $this->selects)->limit((int) $this->limit)->skip((int) $this->offset)->sort($this->sorts);
+	 	
+	 	// Clear
+	 	$this->_clear();
+	 	
+	 	$returns = array();
+	 	
+	 	while ($documents->hasNext())
+		{
+			if ($this->CI->config->item('mongo_return') == 'object')
+			{
+				$returns[] = (object) $documents->getNext();	
+			}
+			else 
+			{
+				$returns[] = (array) $documents->getNext();
+			}
+		}
+	 	
+	 	if ($this->CI->config->item('mongo_return') == 'object')
+		{
+			return (object)$returns[0];
+		}
+		
+		else
+		{
+			return $returns[0];
+		}
+
+	 }
 	
 	/**
 	*	--------------------------------------------------------------------------------
