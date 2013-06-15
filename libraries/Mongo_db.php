@@ -664,8 +664,16 @@ class Mongo_db {
 		}
 	 	
 	 	if ($this->CI->config->item('mongo_return') == 'object')
-		{
-			return (object)$returns[0];
+		{	
+			if (is_array($returns)){
+				if(isset($returns[0])){
+					return (object)$returns[0];
+				}
+			}
+			else{
+				return FALSE;
+			}
+			
 		}
 		
 		else
